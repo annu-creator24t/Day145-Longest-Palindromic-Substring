@@ -1,0 +1,39 @@
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s == null || s.length() < 2) {
+            return s; // empty or single char is itself a palindrome
+        }
+
+        int start = 0;   // start index of longest palindrome found
+        int end = 0;     // end index of longest palindrome found
+
+        for (int i = 0; i < s.length(); i++) {
+            // Case 1: odd-length palindrome (center at i)
+            int len1 = expandFromCenter(s, i, i);
+            // Case 2: even-length palindrome (center between i and i+1)
+            int len2 = expandFromCenter(s, i, i + 1);
+
+            int len = Math.max(len1, len2);
+            if (len > end - start + 1) {
+                // recompute start and end based on length and center i
+                int half = (len - 1) / 2;
+                start = i - half;
+                end = i + (len / 2);
+            }
+        }
+
+        return s.substring(start, end + 1);
+    }
+
+    // Expand around the given left and right indices and
+    // return the length of the palindrome found.
+    private int expandFromCenter(String s, int left, int right) {
+        int n = s.length();
+        while (left >= 0 && right < n && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        // when the loop ends, left and right are one step beyond the valid palindrome
+        return right - left - 1;
+    }
+}
